@@ -1,9 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<Description>This library provides a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.</Description>
+		<Company>Iciclecreek</Company>
+		<Authors>Tom Laird-McConnell</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/tomlm/Consolepinner</PackageProjectUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>console</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/tomlm/consolespinner</RepositoryUrl>
+		<Copyright></Copyright>
+		<RootNamespace>Spinner</RootNamespace>
+		<ContentTargetFolders>content</ContentTargetFolders>
+	</PropertyGroup>
 
+	<ItemGroup>
+		<None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath=""/>
+		<None Include="icon.png" Pack="true" PackagePath="" />
+	</ItemGroup>
 </Project>

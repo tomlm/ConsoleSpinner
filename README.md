@@ -1,5 +1,5 @@
 ﻿# ConsoleSpinner
-This library is a simple console spinner for .NET Core Console applications. It can be used for synchrouns blocks of code or async tasks.  
+This library is a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.  
 
 # Styles
 The spinner can be displayed in the following styles:

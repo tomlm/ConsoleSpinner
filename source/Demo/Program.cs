@@ -15,16 +15,13 @@ namespace Demo
 
             Random rnd = new Random();
 
+            int c = 0;
             foreach (var style in Enum.GetValues(typeof(SpinnerStyle)).Cast<SpinnerStyle>())
             {
                 var delay = rnd.Next(15000, 20000);
                 var task = Task.Delay(delay);
-                ConsoleEx.WriteSpinner(style, task, (frame, done) => $"* {style} {frame}");
-                
-                lock (Console.Out)
-                {
-                    Console.WriteLine();
-                }
+                ConsoleEx.WriteSpinner(style, task, (frame, done) => $" {style} {frame}");
+                lock (Console.Out) Console.WriteLine();
                 tasks.Add(task);
             }
 
@@ -62,7 +59,8 @@ namespace Demo
                     await Task.Delay(1000);
                 }
             }
-            Console.SetCursorPosition(0, pos.Top + 1);
+            Console.SetCursorPosition(0, pos.Top);
+            Console.WriteLine();
             Console.WriteLine("==== Done =====");
         }
     }

@@ -1,6 +1,8 @@
-﻿namespace Spinner
-{
+﻿using System.IO;
+using System.Threading.Tasks;
 
+namespace Spinner
+{
     public class ConsoleSpinner : IDisposable
     {
         private CancellationTokenSource _cancelationTokenSource;
@@ -8,7 +10,7 @@
         private int _left;
         private int _top;
         private string[] _animation;
-        private String _success;
+        private string _success;
         private string _failed;
         private Task _spinnerTask;
         private Task _task;
