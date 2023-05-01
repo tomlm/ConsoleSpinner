@@ -11,7 +11,7 @@
 		<Authors>Tom Laird-McConnell</Authors>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/tomlm/Consolepinner</PackageProjectUrl>
-		<PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/source/ConsoleSpinner/icon.png</PackageIconUrl>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<RepositoryType>git</RepositoryType>
