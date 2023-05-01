@@ -79,8 +79,8 @@ This allows you to have the spinner act like a progress bar.
 
 # Animation Notes
 The animation is asynchronously using Console.SetPosition to position the cursor to the location of the animation so that it can change it.  
-This means that the animation will not work correctly if you are writing to the console at the same time.  
-To prevent that you should use a ```lock(Console.Out)``` around any Console output API call, preventing any background animations from corrupting the cursor position.
+
+While there are active spinners you should put a  ```lock(Console.Out)``` around any Console output API call, preventing any background animations from interacting with the current cursor position.
 
 Example:
 ```csharp
