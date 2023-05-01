@@ -1,7 +1,7 @@
 ﻿# ConsoleSpinner
 This library is a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.  
 
-[![demo.gif](demo.gif)]
+[![demo.gif](https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/demo.gif)]
 
 # Styles
 The spinner can be displayed in the following styles:
