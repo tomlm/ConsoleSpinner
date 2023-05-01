@@ -5,9 +5,13 @@
         Lines,
         Boxes,
         Dots,
+        DotDotDot,
         VerticalBar,
         HorizontalBar,
-        Arrows,
+        SpinArrows,
+        RightArrows,
+        LeftArrows,
+        DualArrows,
         Triangles,
         QuarterBalls,
         HalfBalls,
@@ -15,6 +19,8 @@
         Arcs,
         BouncingBalls,
         Wave,
-        Braille
+        Braille,
+        Sparkle,
+        Staves
     }
 }

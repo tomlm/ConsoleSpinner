@@ -4,8 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
 		<Description>This library provides a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.</Description>
 		<Company>Iciclecreek</Company>
 		<Authors>Tom Laird-McConnell</Authors>
