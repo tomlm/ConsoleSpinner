@@ -1,7 +1,7 @@
 ﻿# ConsoleSpinner
 This library is a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.  
 
-[![demo.gif](https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/demo.gif)]
+![demo.gif](https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/demo.gif)
 
 # Usage 
 The library adds a new helper function ```ConsoleEx.WriteSpinner()```.  This function returns an IDisposable that will display the spinner until it is disposed, 
