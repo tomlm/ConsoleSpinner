@@ -16,37 +16,17 @@ namespace Spinner
         private Task _task;
         private Func<string, bool, string> _customFrame;
 
-        public static Dictionary<SpinnerStyle, string[]> art = new Dictionary<SpinnerStyle, string[]>()
-        {
-            { SpinnerStyle.Lines, new string[] { "|","/","-","\\" }},
-            { SpinnerStyle.Boxes, new string[] { "◰", "◳", "◲", "◱" } },
-            { SpinnerStyle.QuarterBalls, new string[]{ "◴","◷","◶","◵" } },
-            { SpinnerStyle.HalfBalls, new string[] { "◐","◓","◑","◒" } },
-            { SpinnerStyle.Balloons, new string[] { ".", "o", "O", "o" } },
-            { SpinnerStyle.Arcs, new string[] {"◜ ", " ◝", " ◞", "◟ " } },
-            { SpinnerStyle.Dots, new string[] { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" } },
-            { SpinnerStyle.DotDotDot, new string[] { ".  ",".. ","..." } },
-            { SpinnerStyle.VerticalBar, new string[] { "▁","▂","▃","▄","▅","▆","▅","▄","▃" } },
-            { SpinnerStyle.HorizontalBar, new string[] { "▉", "▊", "▋", "▌", "▍", "▎", "▏", "▎", "▍", "▌", "▋", "▊", "▉" } },
-            { SpinnerStyle.SpinArrows, new string[] { "←","↖","↑","↗","→","↘","↓","↙" } },
-            { SpinnerStyle.Triangles, new string[] { "◢","◣","◤","◥" } },
-            { SpinnerStyle.BouncingBalls, new string[] { "(*----)", "(-*---)", "(--*--)", "(---*-)", "(----*)", "(---*-)", "(--*--)", "(-*---)"} },
-            { SpinnerStyle.Wave, new string[] { "⠁⠂⠄⡀⢀⠠⠐⠈", "⠁⠂⠄⡀⢀⠠⠐⠈", "⠂⠄⡀⢀⠠⠐⠈⠁", "⠄⡀⢀⠠⠐⠈⠁⠂", "⡀⢀⠠⠐⠈⠁⠂⠄", "⢀⠠⠐⠈⠁⠂⠄⡀", "⠠⠐⠈⠁⠂⠄⡀⢀", "⠐⠈⠁⠂⠄⡀⢀⠠", "⠈⠁⠂⠄⡀⢀⠠⠐" } },
-            { SpinnerStyle.Braille, new string [] { "⡀", "⡁", "⡂", "⡃", "⡄", "⡅", "⡆", "⡇", "⡈", "⡉", "⡊", "⡋", "⡌", "⡍", "⡎", "⡏", "⡐", "⡑", "⡒", "⡓", "⡔", "⡕", "⡖", "⡗", "⡘", "⡙", "⡚", "⡛", "⡜", "⡝", "⡞", "⡟", "⡠", "⡡", "⡢", "⡣", "⡤", "⡥", "⡦", "⡧", "⡨", "⡩", "⡪", "⡫", "⡬", "⡭", "⡮", "⡯", "⡰", "⡱", "⡲", "⡳", "⡴", "⡵", "⡶", "⡷", "⡸", "⡹", "⡺", "⡻", "⡼", "⡽", "⡾", "⡿", "⢀", "⢁", "⢂", "⢃", "⢄", "⢅", "⢆", "⢇", "⢈", "⢉", "⢊", "⢋", "⢌", "⢍", "⢎", "⢏", "⢐", "⢑", "⢒", "⢓", "⢔", "⢕", "⢖", "⢗", "⢘", "⢙", "⢚", "⢛", "⢜", "⢝", "⢞", "⢟", "⢠", "⢡", "⢢", "⢣", "⢤", "⢥", "⢦", "⢧", "⢨", "⢩", "⢪", "⢫", "⢬", "⢭", "⢮", "⢯", "⢰", "⢱", "⢲", "⢳", "⢴", "⢵", "⢶", "⢷", "⢸", "⢹", "⢺", "⢻", "⢼", "⢽", "⢾", "⢿", "⣀", "⣁", "⣂", "⣃", "⣄", "⣅", "⣆", "⣇", "⣈", "⣉", "⣊", "⣋", "⣌", "⣍", "⣎", "⣏", "⣐", "⣑", "⣒", "⣓", "⣔", "⣕", "⣖", "⣗", "⣘", "⣙", "⣚", "⣛", "⣜", "⣝", "⣞", "⣟", "⣠", "⣡", "⣢", "⣣", "⣤", "⣥", "⣦", "⣧", "⣨", "⣩", "⣪", "⣫", "⣬", "⣭", "⣮", "⣯", "⣰", "⣱", "⣲", "⣳", "⣴", "⣵", "⣶", "⣷", "⣸", "⣹", "⣺", "⣻", "⣼", "⣽", "⣾", "⣿" } },
-            { SpinnerStyle.Sparkle, new string [] { "⁘", "⁙", "⁚", "⁛", "⁜", "⁖", "※" } },
-            { SpinnerStyle.RightArrows, new string [] { ">  ", ">> ", ">>>", ">>>", ">>>"} },
-            { SpinnerStyle.LeftArrows, new string [] { "  <", " <<", "<<<", "<<<", "<<<"} },
-            { SpinnerStyle.DualArrows, new string [] { "  <>  ", " <<>> ", "<<<>>>", " <<>> " } },
-            { SpinnerStyle.Staves, new string[] { "𝄖", "𝄗", "𝄘", "𝄙", "𝄙", "𝄚", "𝄙", "𝄘", "𝄗", } }
-        };
 
-        public ConsoleSpinner(SpinnerStyle style, Task task = null, Func<string, bool, string> customFrame = null, string success = null, string failed = null)
+        public ConsoleSpinner(string[] animation = null, Task task = null, Func<string, bool, string> customFrame = null, string success = null, string failed = null)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             _cancelationTokenSource = new CancellationTokenSource();
             _customFrame = customFrame;
-            _animation = art[style];
+            _animation = animation ?? Animation.Lines;
+            if (!_animation.All(s => s.Length == _animation[0].Length))
+                throw new Exception("All animation frames must be the same length");
+
             this._success = success ?? "✓";
             this._failed = failed ?? "X";
             _frame = 0;

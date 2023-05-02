@@ -46,7 +46,7 @@ With async tasks you simply pass the task into ```ConsoleEx.WriteSpinner()``` an
 var task = Task.Delay(delay);
 lock (Console.Out)
 {
-    ConsoleEx.WriteSpinner(SpinnerStyle.Lines, task);
+    ConsoleEx.WriteSpinner(Animation.Lines, task);
     Console.WriteLine();
 }
 ```
@@ -65,7 +65,7 @@ Return:
 
 ```csharp
 i = 10;
-using (var _ = ConsoleEx.WriteSpinner(SpinnerStyle.Lines, customFrame: (frame, done) => $"{frame} Counter: {i} "))
+using (var _ = ConsoleEx.WriteSpinner(Animation.Lines, customFrame: (frame, done) => $"{frame} Counter: {i} "))
 {
     for (; i > 0; i--)
     {
@@ -92,5 +92,15 @@ using (var _ = ConsoleEx.WriteSpinner())
         Console.Write(...);
     }
     ...long running code..
+}
+```
+
+# Custom animations
+You can create your own animations by passing in a array of strings. The animation will cycle through the strings.  
+
+```csharp
+using(var _ = ConsoleEx.WriteSpinner(new [] { "`  ", "`` ", "```", " ``", "  `", "   "}))
+{
+	...long running code..
 }
 ```

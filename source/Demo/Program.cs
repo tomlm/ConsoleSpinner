@@ -1,4 +1,5 @@
 ﻿using Spinner;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Demo
@@ -15,12 +16,14 @@ namespace Demo
 
             Random rnd = new Random();
 
+            // show each animation on our Common Animation class
             int c = 0;
-            foreach (var style in Enum.GetValues(typeof(SpinnerStyle)).Cast<SpinnerStyle>())
+            foreach (var field in typeof(Animation).GetFields(BindingFlags.Static|BindingFlags.Public))
             {
+                var animation = (String[])field.GetValue(null);
                 var delay = rnd.Next(15000, 20000);
                 var task = Task.Delay(delay);
-                ConsoleEx.WriteSpinner(style, task, (frame, done) => $" {style} {frame}");
+                ConsoleEx.WriteSpinner(animation, task, (frame, done) => $" {field.Name} {frame}");
                 lock (Console.Out) Console.WriteLine();
                 tasks.Add(task);
             }
@@ -51,7 +54,7 @@ namespace Demo
 
             pos = Console.GetCursorPosition();
             i = 10;
-            using (var _ = ConsoleEx.WriteSpinner(SpinnerStyle.Arcs, customFrame: (frame, done) => $"{frame} Counter: {i} "))
+            using (var _ = ConsoleEx.WriteSpinner(Animation.Arcs, customFrame: (frame, done) => $"{frame} Counter: {i} "))
             {
                 for (; i > 0; i--)
                 {
