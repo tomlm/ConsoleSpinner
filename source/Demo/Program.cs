@@ -1,4 +1,5 @@
 ﻿using Spinner;
+using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -17,13 +18,17 @@ namespace Demo
             Random rnd = new Random();
 
             // show each animation on our Common Animation class
-            int c = 0;
-            foreach (var field in typeof(Animation).GetFields(BindingFlags.Static|BindingFlags.Public))
+            var themes = typeof(Themes).GetFields(BindingFlags.Public | BindingFlags.Static).Take(5).Select(field => (ConsoleColor[])field.GetValue(null)).ToArray();
+
+            int counter = 0;
+            foreach (var field in typeof(Animations).GetFields(BindingFlags.Static | BindingFlags.Public))
             {
                 var animation = (String[])field.GetValue(null);
-                var delay = rnd.Next(15000, 20000);
+                var delay = rnd.Next(8000, 12000);
                 var task = Task.Delay(delay);
-                ConsoleEx.WriteSpinner(animation, task, (frame, done) => $" {field.Name} {frame}");
+
+                Console.Write($"{field.Name} ");
+                ConsoleEx.WriteSpinner(task, new SpinnerOptions() { Animation = animation, });
                 lock (Console.Out) Console.WriteLine();
                 tasks.Add(task);
             }
@@ -36,11 +41,12 @@ namespace Demo
             var pos = Console.GetCursorPosition();
             int i = 5;
             Console.WriteLine("This will take 5 seconds...");
-            using (var _ = ConsoleEx.WriteSpinner())
+            using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteAndBlue }))
             {
+                Console.Write(" ");
                 for (; i > 0; i--)
                 {
-                    lock(Console.Out)
+                    lock (Console.Out)
                     {
                         Console.Write($"{i} ");
                     }
@@ -54,7 +60,7 @@ namespace Demo
 
             pos = Console.GetCursorPosition();
             i = 10;
-            using (var _ = ConsoleEx.WriteSpinner(Animation.Arcs, customFrame: (frame, done) => $"{frame} Counter: {i} "))
+            using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation = Animations.Arcs, CustomFrame = (frame, done) => $"{frame} Counter: {i} " }))
             {
                 for (; i > 0; i--)
                 {

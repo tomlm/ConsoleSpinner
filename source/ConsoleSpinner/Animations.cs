@@ -1,6 +1,6 @@
 ﻿namespace Spinner
 {
-    public static class Animation
+    public static class Animations
     {
         public static readonly string[] Lines = new string[] { "|", "/", "-", "\\" };
         public static readonly string[] Boxes = new string[] { "◰", "◳", "◲", "◱" };

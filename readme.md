@@ -3,26 +3,6 @@ This library is a simple console spinner for .NET Core Console applications. It 
 
 [![demo.gif](https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/demo.gif)]
 
-# Styles
-The spinner can be displayed in the following styles:
-| Style | Description | 
-| ----- | ----------- | 
-| Lines | Displays a line spinner | 
-| Dots | Displays a dot spinner | 
-| Boxes| Displays a box spinner | 
-| Arrows | Displays an arrow spinner | 
-| VerticalBars | Displays a vertical bar spinner | 
-| HorizontalBars | Displays a horizontal bar spinner | 
-| Triangles | Displays a triangle spinner | 
-| QuarterBalls | Displays a quarter ball spinner | 
-| HalfBalls | Displays a half ball spinner | 
-| Balloons | Displays a balloon spinner | 
-| Arcs | Displays an arc spinner | 
-| BouncingBalls | Displays a bouncing ball spinner | 
-| Wave | Displays a wave spinner |
-| Braille | Displays a braille spinner | 
- 
-
 # Usage 
 The library adds a new helper function ```ConsoleEx.WriteSpinner()```.  This function returns an IDisposable that will display the spinner until it is disposed, 
 or you can pass in a task and it will display the spinner until the task is complete.
@@ -46,12 +26,69 @@ With async tasks you simply pass the task into ```ConsoleEx.WriteSpinner()``` an
 var task = Task.Delay(delay);
 lock (Console.Out)
 {
-    ConsoleEx.WriteSpinner(Animation.Lines, task);
+    ConsoleEx.WriteSpinner(task);
     Console.WriteLine();
 }
 ```
 
-# Adding status text with spinner.
+# Using Optiosn
+You can control the behavior of the spinner by passing in a SpinnerOptions object to ```ConsoleEx.WriteSpinner()```.    
+
+## Options.Animation
+You can pass in a different animation style by passing in the Options to ```ConsoleEx.WriteSpinner()```.
+```csharp	
+using(_ = Console.WriteSpinner(new SpinnerOptions() { Animation = Animations.Args }))
+{
+	// long running non-task based code 
+}
+```
+
+Predefined animations are:
+The spinner can be displayed in the following styles:
+| Style | Description | 
+| ----- | ----------- | 
+| Animations.Lines | Displays a line spinner | 
+| Animations.Dots | Displays a dot spinner | 
+| Animations.Boxes| Displays a box spinner | 
+| Animations.Arrows | Displays an arrow spinner | 
+| Animations.VerticalBars | Displays a vertical bar spinner | 
+| Animations.HorizontalBars | Displays a horizontal bar spinner | 
+| Animations.Triangles | Displays a triangle spinner | 
+| Animations.QuarterBalls | Displays a quarter ball spinner | 
+| Animations.HalfBalls | Displays a half ball spinner | 
+| Animations.Balloons | Displays a balloon spinner | 
+| Animations.Arcs | Displays an arc spinner | 
+| Animations.BouncingBalls | Displays a bouncing ball spinner | 
+| Animations.Wave | Displays a wave spinner |
+| Animations.Braille | Displays a braille spinner | 
+
+You can also defined your own animations by passing in a array of equal width strings. The animation will cycle through the strings.  
+
+```csharp
+using(var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation= new [] { "`  ", "`` ", "```", " ``", "  `", "   "}))
+{
+	...long running code..
+}
+```
+
+
+## Options.Theme
+The options.Theme is an array of ConsoleColors which will be used for each frame.  The spinner will cycle through the colors.  
+```csharp
+using(_ = Console.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteBlue }))
+{
+	// long running non-task based code 
+}
+```
+
+## Options.Delay
+Delay controls how many ms between each frame of the animation.  The default is 100ms.
+
+## Options.Success, Options.Failure, Options.SuccessColor, Options.FailureColor
+These options all you to define the string for success, failure, and the color for each.  
+
+
+## Options.CustomFrame
 You can customize the spinner by passing in a *CustomFrame* function. The custom frame function takes in the current frame, and a boolean for whether the task is done or not. 
 It returns a string that represents the frame. 
 
@@ -65,7 +102,7 @@ Return:
 
 ```csharp
 i = 10;
-using (var _ = ConsoleEx.WriteSpinner(Animation.Lines, customFrame: (frame, done) => $"{frame} Counter: {i} "))
+using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { CustomFrame: (frame, done) => $"{frame} Counter: {i} " }))
 {
     for (; i > 0; i--)
     {
@@ -87,20 +124,10 @@ Example:
 using (var _ = ConsoleEx.WriteSpinner())
 {
     ...long running code..
+    // lock writing to the console while a spinner is potentially running 
     lock(Console.Out)
-    {
         Console.Write(...);
-    }
     ...long running code..
 }
 ```
 
-# Custom animations
-You can create your own animations by passing in a array of strings. The animation will cycle through the strings.  
-
-```csharp
-using(var _ = ConsoleEx.WriteSpinner(new [] { "`  ", "`` ", "```", " ``", "  `", "   "}))
-{
-	...long running code..
-}
-```

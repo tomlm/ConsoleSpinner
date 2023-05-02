@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Spinner
@@ -9,26 +10,24 @@ namespace Spinner
         private int _frame;
         private int _left;
         private int _top;
-        private string[] _animation;
-        private string _success;
-        private string _failed;
         private Task _spinnerTask;
         private Task _task;
-        private Func<string, bool, string> _customFrame;
 
 
-        public ConsoleSpinner(string[] animation = null, Task task = null, Func<string, bool, string> customFrame = null, string success = null, string failed = null)
+        public ConsoleSpinner(Task task = null, SpinnerOptions? options = null)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             _cancelationTokenSource = new CancellationTokenSource();
-            _customFrame = customFrame;
-            _animation = animation ?? Animation.Lines;
-            if (!_animation.All(s => s.Length == _animation[0].Length))
+            Options = options ?? new SpinnerOptions();
+            if (options.Theme == null)
+            {
+                Options.Theme = new ConsoleColor[] { Console.ForegroundColor };
+            }
+
+            if (!Options.Animation.All(s => s.Length == Options.Animation[0].Length))
                 throw new Exception("All animation frames must be the same length");
 
-            this._success = success ?? "✓";
-            this._failed = failed ?? "X";
             _frame = 0;
 
             this._task = (task == null) ? Task.Delay(int.MaxValue) : task;
@@ -42,11 +41,7 @@ namespace Spinner
             });
         }
 
-        /// <summary>
-        /// Delay between each spin in milliseconds (default 100)
-        /// </summary>
-        public int Delay { get; set; } = 100;
-
+        public SpinnerOptions Options { get; set; }
         /// <summary>
         /// Stop the spinner
         /// </summary>
@@ -62,8 +57,8 @@ namespace Spinner
             {
                 _left = Console.CursorLeft;
                 _top = Console.CursorTop;
-                var frame = _animation[_frame % _animation.Length];
-                var text = (_customFrame != null) ? _customFrame(frame, false) : frame;
+                var frame = Options.Animation[_frame % Options.Animation.Length];
+                var text = (Options.CustomFrame != null) ? Options.CustomFrame(frame, false) : frame;
                 Console.Write(text);
             }
 
@@ -72,19 +67,22 @@ namespace Spinner
                 lock (Console.Out)
                 {
                     _frame++;
-                    // capture position
+                    // capture position and color 
                     var (origLeft, origTop) = Console.GetCursorPosition();
+                    var origColor = Console.ForegroundColor;
 
+                    Console.ForegroundColor = Options.Theme[_frame % Options.Theme.Length];
                     Console.SetCursorPosition(_left, _top);
-                    var frame = _animation[_frame % _animation.Length];
-                    var text = (_customFrame != null) ? _customFrame(frame, false) : frame;
+                    var frame = Options.Animation[_frame % Options.Animation.Length];
+                    var text = (Options.CustomFrame != null) ? Options.CustomFrame(frame, false) : frame;
                     Console.Write(text);
 
-                    // restore position
+                    // restore position and color 
+                    Console.ForegroundColor = origColor;
                     Console.SetCursorPosition(origLeft, origTop);
                 }
 
-                await Task.Delay(Delay, _cancelationTokenSource.Token);
+                await Task.Delay(Options.Delay, _cancelationTokenSource.Token);
             }
 
             Finished(_task);
@@ -95,18 +93,27 @@ namespace Spinner
             lock (Console.Out)
             {
                 var (origLeft, origTop) = Console.GetCursorPosition();
+                var origColor = Console.ForegroundColor;
 
                 Console.SetCursorPosition(_left, _top);
 
                 string frame = null;
                 if (task.IsCompletedSuccessfully)
-                    frame = $"{_success}".PadRight(_animation[0].Length, ' ');
+                {
+                    frame = $"{Options.Success}".PadRight(Options.Animation[0].Length, ' ');
+                    Console.ForegroundColor = Options.SuccessColor;
+                }
                 else
-                    frame = $"{_failed}".PadRight(_animation[0].Length, ' ');
+                {
+                    frame = $"{Options.Failed}".PadRight(Options.Animation[0].Length, ' ');
+                    Console.ForegroundColor = Options.FailedColor;
+                }
 
-                var text = (_customFrame != null) ? _customFrame(frame, false) : frame;
+                var text = (Options.CustomFrame != null) ? Options.CustomFrame(frame, false) : frame;
 
                 Console.Write(text);
+
+                Console.ForegroundColor = origColor;
                 Console.SetCursorPosition(origLeft, origTop);
             }
         }
