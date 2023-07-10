@@ -13,7 +13,7 @@ This allows the spinner to be used in two ways, with long running synchronous co
 With synchronous code you can simply wrap the code in a using statement and the spinner will be displayed until the code block is complete.
 
 ```csharp	
-using(_ = Console.WriteSpinner())
+using(_ = ConsoleEx.WriteSpinner())
 {
 	// long running non-task based code 
 }
@@ -37,7 +37,7 @@ You can control the behavior of the spinner by passing in a SpinnerOptions objec
 ## Options.Animation
 You can pass in a different animation style by passing in the Options to ```ConsoleEx.WriteSpinner()```.
 ```csharp	
-using(_ = Console.WriteSpinner(new SpinnerOptions() { Animation = Animations.Args }))
+using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation = Animations.Args }))
 {
 	// long running non-task based code 
 }
@@ -75,7 +75,7 @@ using(var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation= new [] { 
 ## Options.Theme
 The options.Theme is an array of ConsoleColors which will be used for each frame.  The spinner will cycle through the colors.  
 ```csharp
-using(_ = Console.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteBlue }))
+using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteBlue }))
 {
 	// long running non-task based code 
 }
