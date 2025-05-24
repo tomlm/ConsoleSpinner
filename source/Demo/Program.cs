@@ -1,7 +1,5 @@
 ﻿using Spinner;
-using System.Diagnostics.Metrics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Demo
 {
@@ -27,29 +25,32 @@ namespace Demo
                 var delay = rnd.Next(8000, 12000);
                 var task = Task.Delay(delay);
 
-                Console.Write($"{field.Name} ");
-                ConsoleEx.WriteSpinner(task, new SpinnerOptions() { Animation = animation, });
-                lock (Console.Out) Console.WriteLine();
+                lock (Console.Out)
+                    Console.Write($"{field.Name} ");
+                ConsoleEx.WriteSpinner(task, new SpinnerOptions() { Animation = animation });
+                lock (Console.Out)
+                    Console.WriteLine();
                 tasks.Add(task);
             }
 
             await Task.WhenAll(tasks);
 
+
+            Console.WriteLine("All animations completed!");
             Console.WriteLine();
             Console.WriteLine("==== Demo of inline Spinner no custom frame====");
 
-            var pos = Console.GetCursorPosition();
             int i = 5;
+            var pos = Console.GetCursorPosition();
             Console.WriteLine("This will take 5 seconds...");
             using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteAndBlue }))
             {
-                Console.Write(" ");
+                lock (Console.Out)
+                    Console.Write(" ");
                 for (; i > 0; i--)
                 {
                     lock (Console.Out)
-                    {
                         Console.Write($"{i} ");
-                    }
                     // simulate doing stuff...
                     await Task.Delay(1000);
                 }

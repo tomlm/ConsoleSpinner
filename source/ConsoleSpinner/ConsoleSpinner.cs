@@ -82,7 +82,11 @@ namespace Spinner
                     Console.SetCursorPosition(origLeft, origTop);
                 }
 
-                await Task.Delay(Options.Delay, _cancelationTokenSource.Token);
+                if (Options.Delay <= 0)
+                    // we need to yield to allow the console to update
+                    await Task.Delay(1);
+                else 
+                    await Task.Delay(Options.Delay, _cancelationTokenSource.Token);
             }
 
             Finished(_task);

@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net5.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>2.1.0</Version>
-		<AssemblyVersion>2.1.0.0</AssemblyVersion>
+		<Version>2.1.1</Version>
+		<AssemblyVersion>2.1.1.0</AssemblyVersion>
 		<Description>This library provides a simple console spinner for .NET Core Console applications. It can be used for synchronous blocks of code or async tasks.</Description>
 		<Company>Iciclecreek</Company>
 		<Authors>Tom Laird-McConnell</Authors>
@@ -21,6 +21,7 @@
 		<Copyright></Copyright>
 		<RootNamespace>Spinner</RootNamespace>
 		<ContentTargetFolders>content</ContentTargetFolders>
+    <LangVersion>10</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
