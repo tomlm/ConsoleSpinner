@@ -31,13 +31,13 @@ lock (Console.Out)
 }
 ```
 
-# Using Optiosn
+# Using Options
 You can control the behavior of the spinner by passing in a SpinnerOptions object to ```ConsoleEx.WriteSpinner()```.    
 
 ## Options.Animation
 You can pass in a different animation style by passing in the Options to ```ConsoleEx.WriteSpinner()```.
 ```csharp	
-using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation = Animations.Args }))
+using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation = Animations.Arcs }))
 {
 	// long running non-task based code 
 }
@@ -82,7 +82,7 @@ using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteB
 ```
 
 ## Options.Delay
-Delay controls how many ms between each frame of the animation.  The default is 100ms.
+Delay controls how many ms between each frame of the animation.  The default is 100ms. 
 
 ## Options.Success, Options.Failure, Options.SuccessColor, Options.FailureColor
 These options all you to define the string for success, failure, and the color for each.  
