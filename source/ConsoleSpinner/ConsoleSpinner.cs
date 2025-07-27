@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -13,16 +14,20 @@ namespace Spinner
         private Task _spinnerTask;
         private Task _task;
 
-
         public ConsoleSpinner(Task task = null, SpinnerOptions? options = null)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-            _cancelationTokenSource = new CancellationTokenSource();
-            Options = options ?? new SpinnerOptions();
-            if (options.Theme == null)
+            lock (Console.Out)
             {
-                Options.Theme = new ConsoleColor[] { Console.ForegroundColor };
+                _left = Console.CursorLeft;
+                _top = Console.CursorTop;
+                Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+                _cancelationTokenSource = new CancellationTokenSource();
+                Options = options ?? new SpinnerOptions();
+                if (options.Theme == null)
+                {
+                    Options.Theme = new ConsoleColor[] { Console.ForegroundColor };
+                }
             }
 
             if (!Options.Animation.All(s => s.Length == Options.Animation[0].Length))
@@ -30,18 +35,24 @@ namespace Spinner
 
             _frame = 0;
 
-            this._task = (task == null) ? Task.Delay(int.MaxValue) : task;
-
-            this._spinnerTask = Spinner();
-
-            _ = this._task.ContinueWith(async t =>
+            task = task ?? Task.Delay(int.MaxValue);
+            this._task = task.ContinueWith(async t =>
             {
-                // we wait for the spinner task to finish before writing the final character
+                // we wait for the spinner task to finish 
                 await _spinnerTask;
             });
+
+            this._spinnerTask = Spinner();
         }
 
         public SpinnerOptions Options { get; set; }
+
+        /// <summary>
+        /// This is the async task which is running the animation, you can await this to know that it is no 
+        /// longer manipulating the console output.
+        /// </summary>
+        public Task Task => _spinnerTask;
+
         /// <summary>
         /// Stop the spinner
         /// </summary>
@@ -53,15 +64,6 @@ namespace Spinner
 
         private async Task Spinner()
         {
-            lock (Console.Out)
-            {
-                _left = Console.CursorLeft;
-                _top = Console.CursorTop;
-                var frame = Options.Animation[_frame % Options.Animation.Length];
-                var text = (Options.CustomFrame != null) ? Options.CustomFrame(frame, false) : frame;
-                Console.Write(text);
-            }
-
             while (_cancelationTokenSource.IsCancellationRequested == false && !_task.IsCompleted && !_task.IsFaulted && !_task.IsCanceled)
             {
                 lock (Console.Out)
@@ -80,12 +82,13 @@ namespace Spinner
                     // restore position and color 
                     Console.ForegroundColor = origColor;
                     Console.SetCursorPosition(origLeft, origTop);
+                    Console.Out.Flush();
                 }
 
                 if (Options.Delay <= 0)
                     // we need to yield to allow the console to update
-                    await Task.Delay(1);
-                else 
+                    await Task.Delay(5);
+                else
                     await Task.Delay(Options.Delay, _cancelationTokenSource.Token);
             }
 

@@ -114,20 +114,41 @@ using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { CustomFrame: (frame
 
 This allows you to have the spinner act like a progress bar.
 
-# Animation Notes
-The animation is asynchronously using Console.SetPosition to position the cursor to the location of the animation so that it can change it.  
+# Locking output
 
-While there are active spinners you should put a  ```lock(Console.Out)``` around any Console output API call, preventing any background animations from interacting with the current cursor position.
+ConsoleSpinner is asyncrousnously calling Console APIs. To prevent chaos it uses a lock on ```Console.Out``` to make sure that it's operations are atomic.
+
+While there are active spinners you should put a  ```lock(Console.Out)``` around any Console output API call, preventing any background animations from interferring with the output.
+
+For conveinence there are helper .Write() methods on ConsoleEx which do this internally.
 
 Example:
 ```csharp
 using (var _ = ConsoleEx.WriteSpinner())
 {
-    ...long running code..
-    // lock writing to the console while a spinner is potentially running 
+    // long running code..
+    ConsoleEx.Write("This is a message which won't get clobbered because it takes a lock internally")
     lock(Console.Out)
-        Console.Write(...);
-    ...long running code..
+    {
+        Console.Write("This is a message which won't get clobbered because it is inside a lock");
+    }
+    // long running code..
 }
 ```
+
+Example using tasks:
+```csharp
+var spinner =  new ConsoleSpinner(new SpinnerOptions() { Animation = Animations.Lines });
+```
+
+> NOTE: When a spinner is disposed you no longer need to lock console operations.
+
+## Explanaation
+
+The animation is asynchronously using Console API's like Console.SetPosition to position the cursor to the location of the animation so that it can change it.  
+
+Whenever you start a console spinner you are creating a background task which is monitoring some state (in your case an async task) and periodically waking up and rendering the animation at some location.
+
+To do that the spinner needs to move the cursor to the location for the spinner, write the output and then restore the cursor. If you have any other write operations running at the same time you will get chaos, as you have multiple thread doing stateful operations "move/write/restore" asynchronously.
+
 
