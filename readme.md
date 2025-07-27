@@ -4,40 +4,57 @@ This library is a simple console spinner for .NET Core Console applications. It 
 ![demo.gif](https://raw.githubusercontent.com/tomlm/ConsoleSpinner/main/demo.gif)
 
 # Usage 
-The library adds a new helper function ```ConsoleEx.WriteSpinner()```.  This function returns an IDisposable that will display the spinner until it is disposed, 
+The library adds a new helper function ```ConsoleEx.StartSpinner()```.  This function returns an IDisposable that will display the spinner until it is disposed, 
 or you can pass in a task and it will display the spinner until the task is complete.
 
 This allows the spinner to be used in two ways, with long running synchronous code or with async tasks.
 
-# Usage with synchronous code
-With synchronous code you can simply wrap the code in a using statement and the spinner will be displayed until the code block is complete.
+## Setup
+This library uses background tasks to write to the console output. In order for this to work
+without corrupting the console output, you need to add a reference to the ```Nito.AsyncEx``` nnuget package and set up a single threaded synchronization context for your console application.
+
+```csharp
+class Program
+{
+  static int Main(string[] args)
+    // set up synchornization context for console APIs
+     => AsyncContext.Run(AsyncMain);
+
+  static async Task<int> AsyncMain()
+  {
+    ... your console code here ...
+  }
+}
+```
+
+## Usage with synchronous code
+The spinner is an IDisposable which is useful for synchronous code. Just use a using statement to create a scope for the spinner. The spinner will animate until the block is exited and the object is disposed.
 
 ```csharp	
-using(_ = ConsoleEx.WriteSpinner())
+// spinner will complete when block is exited.
+using(_ = ConsoleEx.StartSpinner())
 {
 	// long running non-task based code 
 }
 ```
 
 ## Usage with async Tasks
-With async tasks you simply pass the task into ```ConsoleEx.WriteSpinner()``` and it will animate the spinner until the task is complete.
+The spinner lifetime can be tied to the lifetime of a Task. This is useful for async code where you want to display a spinner while waiting for a task to complete. The spinner will animate until the task is completed. 
 
 ```csharp
+// spinner will complete when task is completed.
 var task = Task.Delay(delay);
-lock (Console.Out)
-{
-    ConsoleEx.WriteSpinner(task);
-    Console.WriteLine();
-}
+ConsoleEx.StartSpinner(task);
+await task; // wait for the task to complete
 ```
 
-# Using Optiosn
-You can control the behavior of the spinner by passing in a SpinnerOptions object to ```ConsoleEx.WriteSpinner()```.    
+# Using Options
+You can control the behavior of the spinner by passing in a SpinnerOptions object to ```ConsoleEx.StartSpinner()```.    
 
 ## Options.Animation
-You can pass in a different animation style by passing in the Options to ```ConsoleEx.WriteSpinner()```.
+You can pass in a different animation style by passing in the Options to ```ConsoleEx.StartSpinner()```.
 ```csharp	
-using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation = Animations.Args }))
+using(_ = ConsoleEx.StartSpinner(new SpinnerOptions() { Animation = Animations.Args }))
 {
 	// long running non-task based code 
 }
@@ -65,7 +82,7 @@ The spinner can be displayed in the following styles:
 You can also defined your own animations by passing in a array of equal width strings. The animation will cycle through the strings.  
 
 ```csharp
-using(var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation= new [] { "`  ", "`` ", "```", " ``", "  `", "   "}))
+using(var _ = ConsoleEx.StartSpinner(new SpinnerOptions() { Animation= new [] { "`  ", "`` ", "```", " ``", "  `", "   "}))
 {
 	...long running code..
 }
@@ -75,7 +92,7 @@ using(var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Animation= new [] { 
 ## Options.Theme
 The options.Theme is an array of ConsoleColors which will be used for each frame.  The spinner will cycle through the colors.  
 ```csharp
-using(_ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteBlue }))
+using(_ = ConsoleEx.StartSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteBlue }))
 {
 	// long running non-task based code 
 }
@@ -102,7 +119,7 @@ Return:
 
 ```csharp
 i = 10;
-using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { CustomFrame: (frame, done) => $"{frame} Counter: {i} " }))
+using (var _ = ConsoleEx.StartSpinner(new SpinnerOptions() { CustomFrame: (frame, done) => $"{frame} Counter: {i} " }))
 {
     for (; i > 0; i--)
     {
@@ -113,42 +130,4 @@ using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { CustomFrame: (frame
 ```
 
 This allows you to have the spinner act like a progress bar.
-
-# Locking output
-
-ConsoleSpinner is asyncrousnously calling Console APIs. To prevent chaos it uses a lock on ```Console.Out``` to make sure that it's operations are atomic.
-
-While there are active spinners you should put a  ```lock(Console.Out)``` around any Console output API call, preventing any background animations from interferring with the output.
-
-For conveinence there are helper .Write() methods on ConsoleEx which do this internally.
-
-Example:
-```csharp
-using (var _ = ConsoleEx.WriteSpinner())
-{
-    // long running code..
-    ConsoleEx.Write("This is a message which won't get clobbered because it takes a lock internally")
-    lock(Console.Out)
-    {
-        Console.Write("This is a message which won't get clobbered because it is inside a lock");
-    }
-    // long running code..
-}
-```
-
-Example using tasks:
-```csharp
-var spinner =  new ConsoleSpinner(new SpinnerOptions() { Animation = Animations.Lines });
-```
-
-> NOTE: When a spinner is disposed you no longer need to lock console operations.
-
-## Explanaation
-
-The animation is asynchronously using Console API's like Console.SetPosition to position the cursor to the location of the animation so that it can change it.  
-
-Whenever you start a console spinner you are creating a background task which is monitoring some state (in your case an async task) and periodically waking up and rendering the animation at some location.
-
-To do that the spinner needs to move the cursor to the location for the spinner, write the output and then restore the cursor. If you have any other write operations running at the same time you will get chaos, as you have multiple thread doing stateful operations "move/write/restore" asynchronously.
-
 

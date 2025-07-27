@@ -2,12 +2,26 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Spinner
 {
 
     public static class ConsoleEx
     {
+        // Correct initialization: 1 means one thread can enter, max 1.
+        internal static readonly SemaphoreSlim _consoleSemaphore = new SemaphoreSlim(1, 1);
+
+        public static void Lock()
+        {
+            _consoleSemaphore.Wait();
+        }
+
+        public static void Release()
+        {
+            _consoleSemaphore.Release();
+        }
+
         /// <summary>
         /// Write out a spinner to the console. 
         /// </summary>
@@ -15,12 +29,12 @@ namespace Spinner
         /// <param name="task">task to tie the spinner status to</param>
         /// <param name="customFrame">custom function for the frame.  Example: (frame, done) => $"{frame} progress"</param>
         /// <returns></returns>
-        public static ConsoleSpinner WriteSpinner(Task task, SpinnerOptions? options = null)
+        public static ConsoleSpinner StartSpinner(Task task, SpinnerOptions? options = null)
         {
             return new ConsoleSpinner(task: task, options: options);
         }
 
-        public static ConsoleSpinner WriteSpinner(SpinnerOptions? options = null)
+        public static ConsoleSpinner StartSpinner(SpinnerOptions? options = null)
         {
             return new ConsoleSpinner(options: options);
         }
@@ -28,208 +42,179 @@ namespace Spinner
         // Console.Write wrappers
         public static void Write(string value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(string format, params object[] args)
         {
-            lock (Console.Out)
-            {
-                Console.Write(format, args);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(format, args); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(char value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(char[] buffer)
         {
-            lock (Console.Out)
-            {
-                Console.Write(buffer);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(buffer); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(char[] buffer, int index, int count)
         {
-            lock (Console.Out)
-            {
-                Console.Write(buffer, index, count);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(buffer, index, count); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(bool value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(int value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(uint value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(long value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(ulong value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(float value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(double value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(decimal value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void Write(object value)
         {
-            lock (Console.Out)
-            {
-                Console.Write(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.Write(value); }
+            finally { _consoleSemaphore.Release(); }
         }
 
         // Console.WriteLine wrappers
         public static void WriteLine()
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine();
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(string value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(string format, params object[] args)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(format, args);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(format, args); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(char value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(char[] buffer)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(buffer);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(buffer); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(char[] buffer, int index, int count)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(buffer, index, count);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(buffer, index, count); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(bool value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(int value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(uint value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(long value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(ulong value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(float value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(double value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(decimal value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
         public static void WriteLine(object value)
         {
-            lock (Console.Out)
-            {
-                Console.WriteLine(value);
-            }
+            _consoleSemaphore.Wait();
+            try { Console.WriteLine(value); }
+            finally { _consoleSemaphore.Release(); }
         }
 
     }

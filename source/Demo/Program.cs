@@ -1,11 +1,18 @@
-﻿using Spinner;
+﻿using Nito.AsyncEx;
+using Spinner;
 using System.Reflection;
 
 namespace Demo
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static int Main(string[] args)
+        {
+            // make it so that we can have async console operations 
+            return AsyncContext.Run(AsyncMain);
+        }
+
+        static async Task<int> AsyncMain()
         {
             Console.WriteLine("Hit any key to start the demo...");
             Console.ReadKey();
@@ -26,12 +33,9 @@ namespace Demo
                 var task = Task.Delay(delay);
 
                 // use ConsolEx.WriteXX() to write to output while spinners are active.
-                lock (Console.Out)
-                {
-                    Console.Write($"{field.Name} ");
-                    spinners.Add(ConsoleEx.WriteSpinner(task, new SpinnerOptions() { Animation = animation, Delay = 0 }));
-                    Console.WriteLine();
-                }
+                Console.Write($"{field.Name} ");
+                spinners.Add(ConsoleEx.StartSpinner(task, new SpinnerOptions() { Animation = animation, Delay = 0 }));
+                Console.WriteLine();
             }
 
             // wait for all spinners to complete.
@@ -45,12 +49,12 @@ namespace Demo
             int i = 5;
             var pos = Console.GetCursorPosition();
             Console.WriteLine("This will take 5 seconds...");
-            using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteAndBlue }))
+            using (var _ = ConsoleEx.StartSpinner(new SpinnerOptions() { Theme = Themes.RedWhiteAndBlue }))
             {
-                ConsoleEx.Write(" ");
+                Console.Write(" ");
                 for (; i > 0; i--)
                 {
-                    ConsoleEx.Write($"{i} ");
+                    Console.Write($"{i} ");
                     // simulate doing stuff...
                     await Task.Delay(1000);
                 }
@@ -62,7 +66,7 @@ namespace Demo
 
             pos = Console.GetCursorPosition();
             i = 10;
-            using (var _ = ConsoleEx.WriteSpinner(new SpinnerOptions()
+            using (var _ = ConsoleEx.StartSpinner(new SpinnerOptions()
             {
                 Animation = Animations.Arcs,
                 Success = "",
@@ -78,7 +82,14 @@ namespace Demo
             }
             Console.SetCursorPosition(0, pos.Top);
             Console.WriteLine();
+
+            Console.WriteLine("Start/Stop");
+            var spinner = ConsoleEx.StartSpinner();
+            await Task.Delay(2000);
+            spinner.Stop();
+
             Console.WriteLine("==== Done =====");
+            return 0;
         }
     }
 }
