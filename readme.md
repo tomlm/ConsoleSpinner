@@ -54,7 +54,7 @@ You can control the behavior of the spinner by passing in a SpinnerOptions objec
 ## Options.Animation
 You can pass in a different animation style by passing in the Options to ```ConsoleEx.StartSpinner()```.
 ```csharp	
-using(_ = ConsoleEx.StartSpinner(new SpinnerOptions() { Animation = Animations.Dots }))
+using(_ = ConsoleEx.StartSpinner(Animations.Dots))
 {
 	// long running non-task based code 
 }
