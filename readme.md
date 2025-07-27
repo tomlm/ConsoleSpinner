@@ -131,3 +131,9 @@ using (var _ = ConsoleEx.StartSpinner(new SpinnerOptions() { CustomFrame: (frame
 
 This allows you to have the spinner act like a progress bar.
 
+# Change Log
+## 2.x to 3.x
+* Switched to using Nito.AsyncEx for synchronization context. This is required for console applications to use async/await without corrupting the console output. (see https://devblogs.microsoft.com/dotnet/await-synchronizationcontext-and-console-apps/ for details)
+* Changed WriteSpinner() => StartSpinner() to better reflect the usage of the spinner.
+* Added additional method overloads for animation and success/failed to make it easier to invoke 
+* updated readme
