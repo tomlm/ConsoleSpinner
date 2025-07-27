@@ -17,15 +17,25 @@ namespace Demo
             Console.WriteLine("Hit any key to start the demo...");
             Console.ReadKey();
 
+            Console.WriteLine("==== Demo of Simple custom invocation ====");
+            Console.Write("This will take 3 seconds... ");
+            using (_ = ConsoleEx.StartSpinner(Animations.SpinArrows, "YAY", "OH NO"))
+            {
+                // simulate doing stuff...
+                await Task.Delay(3000);
+            }
+            Console.WriteLine();
             Console.WriteLine("==== Demo of Spinner Styles with task ====");
             List<ConsoleSpinner> spinners = new List<ConsoleSpinner>();
 
             Random rnd = new Random();
 
             // show each animation on our Common Animation class
-            var themes = typeof(Themes).GetFields(BindingFlags.Public | BindingFlags.Static).Take(5).Select(field => (ConsoleColor[])field.GetValue(null)).ToArray();
+            var themes = typeof(Themes).GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Take(5)
+                .Select(field => (ConsoleColor[])field.GetValue(null))
+                .ToArray();
 
-            int counter = 0;
             foreach (var field in typeof(Animations).GetFields(BindingFlags.Static | BindingFlags.Public))
             {
                 var animation = (String[])field.GetValue(null);
@@ -34,7 +44,7 @@ namespace Demo
 
                 // use ConsolEx.WriteXX() to write to output while spinners are active.
                 Console.Write($"{field.Name} ");
-                spinners.Add(ConsoleEx.StartSpinner(task, new SpinnerOptions() { Animation = animation, Delay = 0 }));
+                spinners.Add(ConsoleEx.StartSpinner(task, animation));
                 Console.WriteLine();
             }
 
@@ -71,6 +81,7 @@ namespace Demo
                 Animation = Animations.Arcs,
                 Success = "",
                 Failed = "Error",
+                // Custom Frame gives you ability to customize the animaton frame with additional information via a delegate
                 CustomFrame = (frame, done) => $"{frame} Counter: {i} "
             }))
             {
@@ -82,11 +93,6 @@ namespace Demo
             }
             Console.SetCursorPosition(0, pos.Top);
             Console.WriteLine();
-
-            Console.WriteLine("Start/Stop");
-            var spinner = ConsoleEx.StartSpinner();
-            await Task.Delay(2000);
-            spinner.Stop();
 
             Console.WriteLine("==== Done =====");
             return 0;

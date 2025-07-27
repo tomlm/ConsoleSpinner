@@ -15,6 +15,7 @@ namespace Spinner
         private int _top;
         private Task _spinnerTask;
         private Task _task;
+        private bool _disposed;
 
         public ConsoleSpinner(Task task = null, SpinnerOptions? options = null)
         {
@@ -53,23 +54,50 @@ namespace Spinner
         public Task Task => _spinnerTask;
 
         /// <summary>
-        /// Stop the spinner
+        /// Stop the spinner and release resources.
         /// </summary>
         public void Dispose()
         {
-            this._cancelationTokenSource.Cancel();
-            Finished(Task.CompletedTask);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Stop the spinner and release resources. (Obsolete, use Dispose instead)
+        /// </summary>
+        [System.Obsolete("Use Dispose() instead.")]
         public void Stop()
         {
-            this._cancelationTokenSource.Cancel();
-            Finished(Task.CompletedTask);
+            Dispose();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+            _disposed = true;
+
+            if (disposing)
+            {
+                if (_cancelationTokenSource != null)
+                {
+                    _cancelationTokenSource.Cancel();
+                    _cancelationTokenSource.Dispose();
+                    _cancelationTokenSource = null;
+                }
+                Finished(Task.CompletedTask);
+            }
+            // No unmanaged resources to clean up
+        }
+
+        ~ConsoleSpinner()
+        {
+            Dispose(false);
         }
 
         private async Task Spinner()
         {
-            while (_cancelationTokenSource.IsCancellationRequested == false && !_task.IsCompleted && !_task.IsFaulted && !_task.IsCanceled)
+            while (_cancelationTokenSource != null && !_cancelationTokenSource.IsCancellationRequested && !_task.IsCompleted && !_task.IsFaulted && !_task.IsCanceled)
             {
                 _frame++;
                 // capture position and color 
