@@ -61,7 +61,7 @@ using(_ = ConsoleEx.StartSpinner(Animations.Dots))
 ```
 
 Predefined animations are:
-The spinner can be displayed in the following styles:
+
 | Style | Description | 
 | ----- | ----------- | 
 | Animations.Lines | Displays a line spinner | 
