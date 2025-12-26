@@ -12,7 +12,7 @@
         public static readonly string[] DotDotDot = new string[] { ".  ", ".. ", "..." };
         public static readonly string[] VerticalBar = new string[] { "▁", "▂", "▃", "▄", "▅", "▆", "▅", "▄", "▃" };
         public static readonly string[] HorizontalBar = new string[] { "▉", "▊", "▋", "▌", "▍", "▎", "▏", "▎", "▍", "▌", "▋", "▊", "▉" };
-        public static readonly string[] SpinArrows = new string[] { "←", "↖", "↑", "↗", "→", "↘", "↓", "↙" };
+        public static readonly string[] SpinArrows = new string[] { "←\ufe0f", "↖\ufe0f", "↑\ufe0f", "↗\ufe0f", "→\ufe0f", "↘\ufe0f", "↓\ufe0f", "↙\ufe0f" };
         public static readonly string[] Triangles = new string[] { "◢", "◣", "◤", "◥" };
         public static readonly string[] BouncingBalls = new string[] { "(*----)", "(-*---)", "(--*--)", "(---*-)", "(----*)", "(---*-)", "(--*--)", "(-*---)" };
         public static readonly string[] Wave = new string[] { "⠁⠂⠄⡀⢀⠠⠐⠈", "⠁⠂⠄⡀⢀⠠⠐⠈", "⠂⠄⡀⢀⠠⠐⠈⠁", "⠄⡀⢀⠠⠐⠈⠁⠂", "⡀⢀⠠⠐⠈⠁⠂⠄", "⢀⠠⠐⠈⠁⠂⠄⡀", "⠠⠐⠈⠁⠂⠄⡀⢀", "⠐⠈⠁⠂⠄⡀⢀⠠", "⠈⠁⠂⠄⡀⢀⠠⠐" };
